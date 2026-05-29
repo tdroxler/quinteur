@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 900px;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 2.5em;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.score-board {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.label {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.count {
+    font-size: 2em;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.question-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.question-box h2 {
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+.feedback {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+}
+
+.feedback.incorrect {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+}
+
+.note-selector {
+    margin: 30px auto;
+    max-width: 700px;
+}
+
+.selector-section {
+    margin-bottom: 30px;
+}
+
+.selector-label {
+    text-align: center;
+    color: #666;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.note-buttons,
+.accidental-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.note-btn,
+.accidental-btn {
+    min-width: 90px;
+    padding: 20px 25px;
+    font-size: 1.5em;
+    font-weight: bold;
+    border: 3px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.note-btn:hover,
+.accidental-btn:hover {
+    background: #f0f0ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.note-btn:active,
+.accidental-btn:active {
+    transform: translateY(0);
+}
+
+.note-btn.selected,
+.accidental-btn.selected {
+    background: #667eea;
+    color: white;
+}
+
+.note-btn.correct,
+.accidental-btn.correct {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.note-btn.incorrect,
+.accidental-btn.incorrect {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.accidental-btn {
+    min-width: 80px;
+    font-size: 2.5em;
+}
+
+.submit-btn,
+.next-btn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover,
+.next-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:active,
+.next-btn:active {
+    transform: translateY(0);
+}
+
+    @media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .question-box h2 {
+        font-size: 1.4em;
+    }
+
+    .note-btn,
+    .accidental-btn {
+        min-width: 50px;
+        padding: 12px 15px;
+        font-size: 1.1em;
+    }
+
+    .accidental-btn {
+        font-size: 1.6em;
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "quinteur",
+  "version": "1.0.0",
+  "description": "Exercice de théorie musicale - Quintes",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quinteur - Exercice de Théorie Musicale</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Quinteur</h1>
+        <p class="subtitle">Pratiquez les quintes</p>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <span class="label">Correct:</span>
+                <span id="correct-count" class="count">0</span>
+            </div>
+            <div class="score-item">
+                <span class="label">Total:</span>
+                <span id="total-count" class="count">0</span>
+            </div>
+        </div>
+
+        <div class="question-box">
+            <h2 id="question">Quelle est la quinte ascendante de Do?</h2>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="note-selector">
+            <div class="selector-section">
+                <h3 class="selector-label">Note</h3>
+                <div class="note-buttons">
+                    <button class="note-btn" data-letter="C">Do</button>
+                    <button class="note-btn" data-letter="D">Ré</button>
+                    <button class="note-btn" data-letter="E">Mi</button>
+                    <button class="note-btn" data-letter="F">Fa</button>
+                    <button class="note-btn" data-letter="G">Sol</button>
+                    <button class="note-btn" data-letter="A">La</button>
+                    <button class="note-btn" data-letter="B">Si</button>
+                </div>
+            </div>
+            
+            <div class="selector-section">
+                <h3 class="selector-label">Altération</h3>
+                <div class="accidental-buttons">
+                    <button class="accidental-btn" data-accidental="bb">𝄫</button>
+                    <button class="accidental-btn" data-accidental="b">♭</button>
+                    <button class="accidental-btn" data-accidental="#">♯</button>
+                    <button class="accidental-btn" data-accidental="##">𝄪</button>
+                </div>
+            </div>
+        </div>
+
+        <button id="submit-btn" class="submit-btn">Vérifier</button>
+        <button id="next-btn" class="next-btn" style="display: none;">Question Suivante</button>
+    </div>
+
+    <script type="module" src="dist/script.js"></script>
+</body>
+</html>
