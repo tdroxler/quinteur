@@ -130,6 +130,7 @@ export class QuinteurGame {
         totalCount: 0,
         answered: false
     };
+    private streak: number = 0;
 
     private selectedLetter: NoteLetter | null = null;
     private selectedAccidental: Accidental = '';
@@ -138,6 +139,7 @@ export class QuinteurGame {
     private feedbackEl: HTMLElement;
     private correctCountEl: HTMLElement;
     private totalCountEl: HTMLElement;
+    private streakCountEl: HTMLElement;
     private submitBtn: HTMLButtonElement;
     private nextBtn: HTMLButtonElement;
     private noteButtons: NodeListOf<HTMLElement>;
@@ -148,6 +150,7 @@ export class QuinteurGame {
         this.feedbackEl = document.getElementById('feedback')!;
         this.correctCountEl = document.getElementById('correct-count')!;
         this.totalCountEl = document.getElementById('total-count')!;
+        this.streakCountEl = document.getElementById('streak-count')!;
         this.submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
         this.nextBtn = document.getElementById('next-btn') as HTMLButtonElement;
         this.noteButtons = document.querySelectorAll('.note-btn');
@@ -270,23 +273,60 @@ export class QuinteurGame {
         if (isCorrect) {
             this.state.correctCount++;
             this.correctCountEl.textContent = this.state.correctCount.toString();
-            this.feedbackEl.textContent = `✓ Correct ! La quinte ${quality} ${direction} de ${noteFr} est ${answerFr}`;
-            this.feedbackEl.className = 'feedback correct';
+            this.streak++;
+            this.streakCountEl.textContent = this.streak.toString();
 
-            // Highlight correct buttons
-            this.noteButtons.forEach(btn => {
-                if (btn.getAttribute('data-letter') === answer.letter) {
-                    btn.classList.add('correct');
-                    btn.classList.remove('selected');
-                }
-            });
-            this.accidentalButtons.forEach(btn => {
-                if (btn.getAttribute('data-accidental') === answer.accidental) {
-                    btn.classList.add('correct');
-                    btn.classList.remove('selected');
-                }
-            });
+            // Check if player won (5 correct in a row)
+            if (this.streak >= 5) {
+                this.feedbackEl.textContent = '🏆 Bravo tu as gagné ! 🏆';
+                this.feedbackEl.className = 'feedback correct victory';
+
+                // Highlight correct buttons
+                this.noteButtons.forEach(btn => {
+                    if (btn.getAttribute('data-letter') === answer.letter) {
+                        btn.classList.add('correct');
+                        btn.classList.remove('selected');
+                    }
+                });
+                this.accidentalButtons.forEach(btn => {
+                    if (btn.getAttribute('data-accidental') === answer.accidental) {
+                        btn.classList.add('correct');
+                        btn.classList.remove('selected');
+                    }
+                });
+
+                this.submitBtn.style.display = 'none';
+                this.nextBtn.style.display = 'block';
+
+                // Reset streak for next game
+                this.streak = 0;
+                this.streakCountEl.textContent = this.streak.toString();
+            } else {
+                this.feedbackEl.textContent = `✓ Correct ! La quinte ${quality} ${direction} de ${noteFr} est ${answerFr}`;
+                this.feedbackEl.className = 'feedback correct';
+
+                // Highlight correct buttons
+                this.noteButtons.forEach(btn => {
+                    if (btn.getAttribute('data-letter') === answer.letter) {
+                        btn.classList.add('correct');
+                        btn.classList.remove('selected');
+                    }
+                });
+                this.accidentalButtons.forEach(btn => {
+                    if (btn.getAttribute('data-accidental') === answer.accidental) {
+                        btn.classList.add('correct');
+                        btn.classList.remove('selected');
+                    }
+                });
+
+                this.submitBtn.style.display = 'none';
+                this.nextBtn.style.display = 'block';
+            }
         } else {
+            // Reset streak on error
+            this.streak = 0;
+            this.streakCountEl.textContent = this.streak.toString();
+
             this.feedbackEl.textContent = `✗ Incorrect. La quinte ${quality} ${direction} de ${noteFr} est ${answerFr}, pas ${selectedFr}`;
             this.feedbackEl.className = 'feedback incorrect';
 
@@ -309,9 +349,9 @@ export class QuinteurGame {
                     btn.classList.add('correct');
                 }
             });
-        }
 
-        this.submitBtn.style.display = 'none';
-        this.nextBtn.style.display = 'block';
+            this.submitBtn.style.display = 'none';
+            this.nextBtn.style.display = 'block';
+        }
     }
 }
