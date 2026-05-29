@@ -17,14 +17,12 @@ export class NoteReadingGame {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
     private currentQuestion: NoteQuestion | null = null;
-    private correctCount: number = 0;
-    private totalCount: number = 0;
+    private streak: number = 0;
     private timer: number = 5;
     private timerInterval: number | null = null;
     private answered: boolean = false;
 
-    private correctCountEl: HTMLElement;
-    private totalCountEl: HTMLElement;
+    private streakCountEl: HTMLElement;
     private timerDisplayEl: HTMLElement;
     private feedbackEl: HTMLElement;
     private noteButtons: NodeListOf<HTMLElement>;
@@ -32,8 +30,7 @@ export class NoteReadingGame {
     constructor() {
         this.canvas = document.getElementById('staff-canvas') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
-        this.correctCountEl = document.getElementById('notes-correct-count')!;
-        this.totalCountEl = document.getElementById('notes-total-count')!;
+        this.streakCountEl = document.getElementById('notes-streak-count')!;
         this.timerDisplayEl = document.getElementById('timer-display')!;
         this.feedbackEl = document.getElementById('notes-feedback')!;
         this.noteButtons = document.querySelectorAll('.note-btn-simple');
@@ -82,7 +79,7 @@ export class NoteReadingGame {
         this.timerInterval = window.setInterval(() => {
             this.timer--;
             this.timerDisplayEl.textContent = this.timer.toString();
-            
+
             if (this.timer <= 2) {
                 this.timerDisplayEl.classList.add('warning');
             }
@@ -95,10 +92,10 @@ export class NoteReadingGame {
 
     private generateQuestion(): NoteQuestion {
         const clef: Clef = Math.random() > 0.5 ? 'G' : 'F';
-        
+
         // Define range of notes for each clef
         const positions: NotePosition[] = [];
-        
+
         if (clef === 'G') {
             // G clef (Treble): C4 to B5
             // Staff lines from bottom to top: E4, G4, B4, D5, F5
@@ -250,25 +247,51 @@ export class NoteReadingGame {
 
         this.answered = true;
         this.stop();
-        this.totalCount++;
-        this.totalCountEl.textContent = this.totalCount.toString();
 
         const correctNote = this.currentQuestion.position.note;
         const isCorrect = selectedNote === correctNote;
 
         if (isCorrect) {
-            this.correctCount++;
-            this.correctCountEl.textContent = this.correctCount.toString();
-            this.feedbackEl.textContent = '✓ Correct !';
-            this.feedbackEl.className = 'feedback correct';
+            this.streak++;
+            this.streakCountEl.textContent = this.streak.toString();
 
-            // Highlight correct button
-            this.noteButtons.forEach(btn => {
-                if (btn.getAttribute('data-note') === correctNote) {
-                    btn.classList.add('correct');
-                }
-            });
+            // Check if player won (10 correct in a row)
+            if (this.streak >= 10) {
+                this.feedbackEl.textContent = '🏆 Bravo tu as gagné ! 🏆';
+                this.feedbackEl.className = 'feedback correct victory';
+
+                // Highlight correct button
+                this.noteButtons.forEach(btn => {
+                    if (btn.getAttribute('data-note') === correctNote) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                // Reset and start new game after 3 seconds
+                setTimeout(() => {
+                    this.resetGame();
+                }, 3000);
+            } else {
+                this.feedbackEl.textContent = '✓ Correct !';
+                this.feedbackEl.className = 'feedback correct';
+
+                // Highlight correct button
+                this.noteButtons.forEach(btn => {
+                    if (btn.getAttribute('data-note') === correctNote) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                // Next question after 2 seconds
+                setTimeout(() => {
+                    this.newQuestion();
+                }, 2000);
+            }
         } else {
+            // Reset streak on error
+            this.streak = 0;
+            this.streakCountEl.textContent = this.streak.toString();
+
             const correctNoteFr = noteToFrench[correctNote];
             const selectedNoteFr = noteToFrench[selectedNote];
             this.feedbackEl.textContent = `✗ Incorrect. C'était ${correctNoteFr}, pas ${selectedNoteFr}`;
@@ -284,12 +307,12 @@ export class NoteReadingGame {
                     btn.classList.add('correct');
                 }
             });
-        }
 
-        // Next question after 2 seconds
-        setTimeout(() => {
-            this.newQuestion();
-        }, 2000);
+            // Next question after 2 seconds
+            setTimeout(() => {
+                this.newQuestion();
+            }, 2000);
+        }
     }
 
     private timeUp(): void {
@@ -297,12 +320,14 @@ export class NoteReadingGame {
 
         this.answered = true;
         this.stop();
-        this.totalCount++;
-        this.totalCountEl.textContent = this.totalCount.toString();
+
+        // Reset streak on timeout
+        this.streak = 0;
+        this.streakCountEl.textContent = this.streak.toString();
 
         const correctNote = this.currentQuestion.position.note;
         const correctNoteFr = noteToFrench[correctNote];
-        
+
         this.feedbackEl.textContent = `⏱ Temps écoulé ! C'était ${correctNoteFr}`;
         this.feedbackEl.className = 'feedback incorrect';
 
@@ -317,5 +342,11 @@ export class NoteReadingGame {
         setTimeout(() => {
             this.newQuestion();
         }, 2000);
+    }
+
+    private resetGame(): void {
+        this.streak = 0;
+        this.streakCountEl.textContent = this.streak.toString();
+        this.newQuestion();
     }
 }

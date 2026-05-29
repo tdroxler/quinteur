@@ -140,6 +140,19 @@ h1 {
     padding: 15px;
 }
 
+.feedback.victory {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #333;
+    padding: 20px;
+    font-size: 1.8em;
+    animation: victoryPulse 0.6s ease-in-out;
+}
+
+@keyframes victoryPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
 .note-selector {
     margin: 30px auto;
     max-width: 700px;
