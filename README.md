@@ -1,49 +1,58 @@
 # 🎵 Quinteur
 
-Exercice interactif de théorie musicale pour pratiquer les quintes.
+Interactive music theory exercise to practice fifths.
 
-## Fonctionnalités
+## Features
 
-- Questions aléatoires sur les quintes (ascendantes/descendantes)
-- Types de quintes: justes, augmentées, diminuées
-- Interface de piano interactive
-- Notation française (Do, Ré, Mi, etc.)
-- Suivi du score
+- Random questions on fifths (ascending/descending)
 
-## Pour GitHub Pages
+### Prerequisites
 
-1. Initialisez un dépôt git:
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-```
+- Node.js and npm installed
+- A local HTTP server (Python or Node.js)
 
-2. Créez un dépôt sur GitHub et publiez:
-```bash
-git remote add origin https://github.com/VOTRE-USERNAME/quinteur.git
-git push -u origin main
-```
+### Installation and quick start
 
-3. Activez GitHub Pages:
-   - Allez dans Settings → Pages
-   - Source: Deploy from a branch
-   - Branch: main → / (root)
-   - Sauvegardez
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Votre site sera disponible à: `https://VOTRE-USERNAME.github.io/quinteur/`
+2. **Compile TypeScript**
+   ```bash
+   npm run build
+   ```
 
-## Développement Local
+3. **Start local server**
 
-```bash
-npm install
-npm run build
-```
+   Option 1 - With Python 3 (recommended if already installed):
+   ```bash
+   python3 -m http.server 8000
+   ```
 
-Ouvrez `index.html` dans votre navigateur.
+   Option 2 - With Node.js http-server:
+   ```bash
+   npx http-server -p 8000
+   ```
 
-Pour développement avec auto-compilation:
+4. **Open in browser**
+
+   Visit: `http://localhost:8000`
+
+### Development mode with automatic recompilation
+
+For more comfortable development, start compilation in watch mode in one terminal:
+
 ```bash
 npm run watch
 ```
-# quinteur
+
+Then in a second terminal, start the HTTP server (see step 3 above).
+
+With each modification to the TypeScript code, it will be automatically recompiled. Simply refresh your browser to see the changes.
+
+### Available commands
+
+- `npm run build` - Compile TypeScript once
+- `npm run watch` - Compile continuously (watch mode)
+- `npm run clean` - Remove compiled files
