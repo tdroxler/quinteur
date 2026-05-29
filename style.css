@@ -23,6 +23,42 @@ body {
     width: 100%;
 }
 
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tab-btn {
+    padding: 12px 30px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background: #e0e0e0;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.exercise-content {
+    display: none;
+}
+
+.exercise-content.active {
+    display: block;
+}
+
 h1 {
     text-align: center;
     color: #333;
@@ -230,4 +266,82 @@ h1 {
     .accidental-btn {
         font-size: 1.6em;
     }
+
+    #staff-canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .note-btn-simple {
+        min-width: 45px;
+        padding: 10px;
+        font-size: 1em;
+    }
+}
+
+#staff-canvas {
+    display: block;
+    margin: 30px auto;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    background: white;
+    max-width: 100%;
+}
+
+.note-buttons-simple {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.note-btn-simple {
+    min-width: 80px;
+    padding: 15px 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    border: 3px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.note-btn-simple:hover {
+    background: #f0f0ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.note-btn-simple.correct {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.note-btn-simple.incorrect {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.timer-display {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    color: #667eea;
+    margin: 20px 0;
+    min-height: 60px;
+}
+
+.timer-display.warning {
+    color: #dc3545;
+    animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
