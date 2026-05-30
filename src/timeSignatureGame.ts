@@ -22,6 +22,7 @@ export class TimeSignatureGame {
     private unitButtons: NodeListOf<HTMLElement>;
     private typeButtons: NodeListOf<HTMLElement>;
     private submitBtn: HTMLButtonElement;
+    private nextBtn: HTMLButtonElement;
 
     private selectedBeats: number | null = null;
     private selectedUnit: string | null = null;
@@ -50,6 +51,7 @@ export class TimeSignatureGame {
         this.unitButtons = document.querySelectorAll('.unit-btn');
         this.typeButtons = document.querySelectorAll('.type-btn');
         this.submitBtn = document.getElementById('time-submit-btn') as HTMLButtonElement;
+        this.nextBtn = document.getElementById('time-next-btn') as HTMLButtonElement;
 
         this.setupEventListeners();
     }
@@ -84,6 +86,8 @@ export class TimeSignatureGame {
                 this.checkAnswer();
             }
         });
+
+        this.nextBtn.addEventListener('click', () => this.newQuestion());
     }
 
     private selectBeats(beats: number): void {
@@ -138,6 +142,8 @@ export class TimeSignatureGame {
         this.drawTimeSignature();
         this.feedbackEl.textContent = '';
         this.feedbackEl.className = 'feedback';
+        this.submitBtn.style.display = 'block';
+        this.nextBtn.style.display = 'none';
 
         // Reset button states
         this.beatsButtons.forEach(btn => {
@@ -250,10 +256,12 @@ export class TimeSignatureGame {
                     }
                 });
 
-                // Reset and start new game after 3 seconds
-                setTimeout(() => {
-                    this.resetGame();
-                }, 3000);
+                this.submitBtn.style.display = 'none';
+                this.nextBtn.style.display = 'block';
+
+                // Reset streak
+                this.streak = 0;
+                this.streakCountEl.textContent = this.streak.toString();
             } else {
                 this.feedbackEl.textContent = '✓ Correct !';
                 this.feedbackEl.className = 'feedback correct';
@@ -275,10 +283,8 @@ export class TimeSignatureGame {
                     }
                 });
 
-                // Next question after 2 seconds
-                setTimeout(() => {
-                    this.newQuestion();
-                }, 2000);
+                this.submitBtn.style.display = 'none';
+                this.nextBtn.style.display = 'block';
             }
         } else {
             // Reset streak on error
@@ -288,39 +294,34 @@ export class TimeSignatureGame {
             this.feedbackEl.textContent = `✗ Incorrect. C'était ${correct.beatsPerMeasure} temps par mesure (${correct.type}), unité de temps : ${correct.beatUnit}`;
             this.feedbackEl.className = 'feedback incorrect';
 
-            // Highlight buttons
+            // Highlight buttons - show correct answers in green, incorrect selections in red (only if they don't match correct)
             this.beatsButtons.forEach(btn => {
                 const beats = parseInt(btn.getAttribute('data-beats')!);
-                if (beats === this.selectedBeats) {
-                    btn.classList.add('incorrect');
-                }
                 if (beats === correct.beatsPerMeasure) {
                     btn.classList.add('correct');
+                } else if (beats === this.selectedBeats) {
+                    btn.classList.add('incorrect');
                 }
             });
             this.unitButtons.forEach(btn => {
                 const unit = btn.getAttribute('data-unit')!;
-                if (unit === this.selectedUnit) {
-                    btn.classList.add('incorrect');
-                }
                 if (unit === correct.beatUnit) {
                     btn.classList.add('correct');
+                } else if (unit === this.selectedUnit) {
+                    btn.classList.add('incorrect');
                 }
             });
             this.typeButtons.forEach(btn => {
                 const type = btn.getAttribute('data-type')!;
-                if (type === this.selectedType) {
-                    btn.classList.add('incorrect');
-                }
                 if (type === correct.type) {
                     btn.classList.add('correct');
+                } else if (type === this.selectedType) {
+                    btn.classList.add('incorrect');
                 }
             });
 
-            // Next question after 2 seconds
-            setTimeout(() => {
-                this.newQuestion();
-            }, 2000);
+            this.submitBtn.style.display = 'none';
+            this.nextBtn.style.display = 'block';
         }
     }
 

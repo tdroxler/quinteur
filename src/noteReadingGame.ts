@@ -26,6 +26,7 @@ export class NoteReadingGame {
     private timerDisplayEl: HTMLElement;
     private feedbackEl: HTMLElement;
     private noteButtons: NodeListOf<HTMLElement>;
+    private nextBtn: HTMLButtonElement;
 
     constructor() {
         this.canvas = document.getElementById('staff-canvas') as HTMLCanvasElement;
@@ -34,6 +35,7 @@ export class NoteReadingGame {
         this.timerDisplayEl = document.getElementById('timer-display')!;
         this.feedbackEl = document.getElementById('notes-feedback')!;
         this.noteButtons = document.querySelectorAll('.note-btn-simple');
+        this.nextBtn = document.getElementById('notes-next-btn') as HTMLButtonElement;
 
         this.setupEventListeners();
     }
@@ -46,6 +48,8 @@ export class NoteReadingGame {
                 this.checkAnswer(note);
             });
         });
+
+        this.nextBtn.addEventListener('click', () => this.newQuestion());
     }
 
     start(): void {
@@ -69,6 +73,7 @@ export class NoteReadingGame {
         this.timerDisplayEl.classList.remove('warning');
         this.feedbackEl.textContent = '';
         this.feedbackEl.className = 'feedback';
+        this.nextBtn.style.display = 'none';
 
         // Reset button states
         this.noteButtons.forEach(btn => {
@@ -267,10 +272,11 @@ export class NoteReadingGame {
                     }
                 });
 
-                // Reset and start new game after 3 seconds
-                setTimeout(() => {
-                    this.resetGame();
-                }, 3000);
+                this.nextBtn.style.display = 'block';
+
+                // Reset streak
+                this.streak = 0;
+                this.streakCountEl.textContent = this.streak.toString();
             } else {
                 this.feedbackEl.textContent = '✓ Correct !';
                 this.feedbackEl.className = 'feedback correct';
@@ -282,10 +288,7 @@ export class NoteReadingGame {
                     }
                 });
 
-                // Next question after 2 seconds
-                setTimeout(() => {
-                    this.newQuestion();
-                }, 2000);
+                this.nextBtn.style.display = 'block';
             }
         } else {
             // Reset streak on error
@@ -308,10 +311,7 @@ export class NoteReadingGame {
                 }
             });
 
-            // Next question after 2 seconds
-            setTimeout(() => {
-                this.newQuestion();
-            }, 2000);
+            this.nextBtn.style.display = 'block';
         }
     }
 
@@ -338,10 +338,7 @@ export class NoteReadingGame {
             }
         });
 
-        // Next question after 2 seconds
-        setTimeout(() => {
-            this.newQuestion();
-        }, 2000);
+        this.nextBtn.style.display = 'block';
     }
 
     private resetGame(): void {

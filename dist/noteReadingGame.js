@@ -12,6 +12,7 @@ export class NoteReadingGame {
         this.timerDisplayEl = document.getElementById('timer-display');
         this.feedbackEl = document.getElementById('notes-feedback');
         this.noteButtons = document.querySelectorAll('.note-btn-simple');
+        this.nextBtn = document.getElementById('notes-next-btn');
         this.setupEventListeners();
     }
     setupEventListeners() {
@@ -23,6 +24,7 @@ export class NoteReadingGame {
                 this.checkAnswer(note);
             });
         });
+        this.nextBtn.addEventListener('click', () => this.newQuestion());
     }
     start() {
         this.newQuestion();
@@ -43,6 +45,7 @@ export class NoteReadingGame {
         this.timerDisplayEl.classList.remove('warning');
         this.feedbackEl.textContent = '';
         this.feedbackEl.className = 'feedback';
+        this.nextBtn.style.display = 'none';
         // Reset button states
         this.noteButtons.forEach(btn => {
             btn.classList.remove('correct', 'incorrect');
@@ -218,10 +221,10 @@ export class NoteReadingGame {
                         btn.classList.add('correct');
                     }
                 });
-                // Reset and start new game after 3 seconds
-                setTimeout(() => {
-                    this.resetGame();
-                }, 3000);
+                this.nextBtn.style.display = 'block';
+                // Reset streak
+                this.streak = 0;
+                this.streakCountEl.textContent = this.streak.toString();
             }
             else {
                 this.feedbackEl.textContent = '✓ Correct !';
@@ -232,10 +235,7 @@ export class NoteReadingGame {
                         btn.classList.add('correct');
                     }
                 });
-                // Next question after 2 seconds
-                setTimeout(() => {
-                    this.newQuestion();
-                }, 2000);
+                this.nextBtn.style.display = 'block';
             }
         }
         else {
@@ -256,10 +256,7 @@ export class NoteReadingGame {
                     btn.classList.add('correct');
                 }
             });
-            // Next question after 2 seconds
-            setTimeout(() => {
-                this.newQuestion();
-            }, 2000);
+            this.nextBtn.style.display = 'block';
         }
     }
     timeUp() {
@@ -280,10 +277,7 @@ export class NoteReadingGame {
                 btn.classList.add('correct');
             }
         });
-        // Next question after 2 seconds
-        setTimeout(() => {
-            this.newQuestion();
-        }, 2000);
+        this.nextBtn.style.display = 'block';
     }
     resetGame() {
         this.streak = 0;
