@@ -3,7 +3,7 @@ export class NoteReadingGame {
     constructor() {
         this.currentQuestion = null;
         this.streak = 0;
-        this.timer = 5;
+        this.timer = 10;
         this.timerInterval = null;
         this.answered = false;
         this.canvas = document.getElementById('staff-canvas');
@@ -36,7 +36,7 @@ export class NoteReadingGame {
     newQuestion() {
         this.stop();
         this.answered = false;
-        this.timer = 5;
+        this.timer = 10;
         this.currentQuestion = this.generateQuestion();
         this.drawStaff();
         this.timerDisplayEl.textContent = this.timer.toString();
@@ -153,7 +153,7 @@ export class NoteReadingGame {
         const noteY = staffY - yPos * (lineSpacing / 2);
         // Draw ledger lines if needed
         // Below staff (yPos < -4)
-        if (yPos <= -5) {
+        if (yPos < -5) {
             // Draw ledger lines for positions -6, -8, -10, etc.
             const startLine = -6;
             const endLine = Math.floor(yPos / 2) * 2; // Round down to nearest even number
@@ -166,7 +166,7 @@ export class NoteReadingGame {
             }
         }
         // Above staff (yPos > 4)
-        if (yPos >= 5) {
+        if (yPos > 5) {
             // Draw ledger lines for positions 6, 8, 10, etc.
             const startLine = 6;
             const endLine = Math.ceil(yPos / 2) * 2; // Round up to nearest even number

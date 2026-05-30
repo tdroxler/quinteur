@@ -18,7 +18,7 @@ export class NoteReadingGame {
     private ctx: CanvasRenderingContext2D;
     private currentQuestion: NoteQuestion | null = null;
     private streak: number = 0;
-    private timer: number = 5;
+    private timer: number = 10;
     private timerInterval: number | null = null;
     private answered: boolean = false;
 
@@ -62,7 +62,7 @@ export class NoteReadingGame {
     private newQuestion(): void {
         this.stop();
         this.answered = false;
-        this.timer = 5;
+        this.timer = 10;
         this.currentQuestion = this.generateQuestion();
         this.drawStaff();
         this.timerDisplayEl.textContent = this.timer.toString();
@@ -195,7 +195,7 @@ export class NoteReadingGame {
 
         // Draw ledger lines if needed
         // Below staff (yPos < -4)
-        if (yPos <= -5) {
+        if (yPos < -5) {
             // Draw ledger lines for positions -6, -8, -10, etc.
             const startLine = -6;
             const endLine = Math.floor(yPos / 2) * 2; // Round down to nearest even number
@@ -208,7 +208,7 @@ export class NoteReadingGame {
             }
         }
         // Above staff (yPos > 4)
-        if (yPos >= 5) {
+        if (yPos > 5) {
             // Draw ledger lines for positions 6, 8, 10, etc.
             const startLine = 6;
             const endLine = Math.ceil(yPos / 2) * 2; // Round up to nearest even number
