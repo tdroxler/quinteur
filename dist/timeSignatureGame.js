@@ -15,6 +15,7 @@ export class TimeSignatureGame {
             { display: '2/2', beatsPerMeasure: 2, beatUnit: 'blanche', type: 'binaire' },
             { display: '3/2', beatsPerMeasure: 3, beatUnit: 'blanche', type: 'binaire' },
             { display: '3/8', beatsPerMeasure: 3, beatUnit: 'croche', type: 'binaire' },
+            { display: '3/8', beatsPerMeasure: 1, beatUnit: 'noire pointée', type: 'ternaire' },
             { display: '6/8', beatsPerMeasure: 2, beatUnit: 'noire pointée', type: 'ternaire' },
             { display: '9/8', beatsPerMeasure: 3, beatUnit: 'noire pointée', type: 'ternaire' },
             { display: '12/8', beatsPerMeasure: 4, beatUnit: 'noire pointée', type: 'ternaire' }
@@ -128,6 +129,82 @@ export class TimeSignatureGame {
         const signature = this.timeSignatures[Math.floor(Math.random() * this.timeSignatures.length)];
         return { signature };
     }
+    getValidAnswers(display) {
+        return this.timeSignatures.filter(signature => signature.display === display);
+    }
+    matchesSelectedAnswer(signature) {
+        return this.selectedBeats === signature.beatsPerMeasure &&
+            this.selectedUnit === signature.beatUnit &&
+            this.selectedType === signature.type;
+    }
+    formatAnswer(signature) {
+        return `${signature.beatsPerMeasure} temps par mesure (${signature.type}), unité de temps : ${signature.beatUnit}`;
+    }
+    formatAnswers(signatures) {
+        return signatures.map(signature => this.formatAnswer(signature)).join(' ou ');
+    }
+    highlightCorrectAnswers(signatures) {
+        const correctBeats = new Set(signatures.map(signature => signature.beatsPerMeasure));
+        const correctUnits = new Set(signatures.map(signature => signature.beatUnit));
+        const correctTypes = new Set(signatures.map(signature => signature.type));
+        this.beatsButtons.forEach(btn => {
+            if (correctBeats.has(parseInt(btn.getAttribute('data-beats')))) {
+                btn.classList.add('correct');
+            }
+        });
+        this.unitButtons.forEach(btn => {
+            if (correctUnits.has(btn.getAttribute('data-unit'))) {
+                btn.classList.add('correct');
+            }
+        });
+        this.typeButtons.forEach(btn => {
+            if (correctTypes.has(btn.getAttribute('data-type'))) {
+                btn.classList.add('correct');
+            }
+        });
+    }
+    highlightIncorrectAnswer(signatures) {
+        const correctBeats = new Set(signatures.map(signature => signature.beatsPerMeasure));
+        const correctUnits = new Set(signatures.map(signature => signature.beatUnit));
+        const correctTypes = new Set(signatures.map(signature => signature.type));
+        const hasMultipleAnswers = signatures.length > 1;
+        this.beatsButtons.forEach(btn => {
+            const beats = parseInt(btn.getAttribute('data-beats'));
+            if (hasMultipleAnswers && beats === this.selectedBeats) {
+                btn.classList.add('incorrect');
+            }
+            else if (correctBeats.has(beats)) {
+                btn.classList.add('correct');
+            }
+            else if (beats === this.selectedBeats) {
+                btn.classList.add('incorrect');
+            }
+        });
+        this.unitButtons.forEach(btn => {
+            const unit = btn.getAttribute('data-unit');
+            if (hasMultipleAnswers && unit === this.selectedUnit) {
+                btn.classList.add('incorrect');
+            }
+            else if (correctUnits.has(unit)) {
+                btn.classList.add('correct');
+            }
+            else if (unit === this.selectedUnit) {
+                btn.classList.add('incorrect');
+            }
+        });
+        this.typeButtons.forEach(btn => {
+            const type = btn.getAttribute('data-type');
+            if (hasMultipleAnswers && type === this.selectedType) {
+                btn.classList.add('incorrect');
+            }
+            else if (correctTypes.has(type)) {
+                btn.classList.add('correct');
+            }
+            else if (type === this.selectedType) {
+                btn.classList.add('incorrect');
+            }
+        });
+    }
     drawTimeSignature() {
         if (!this.currentQuestion)
             return;
@@ -182,33 +259,16 @@ export class TimeSignatureGame {
         if (this.answered || !this.currentQuestion)
             return;
         this.answered = true;
-        const correct = this.currentQuestion.signature;
-        const isCorrect = this.selectedBeats === correct.beatsPerMeasure &&
-            this.selectedUnit === correct.beatUnit &&
-            this.selectedType === correct.type;
-        if (isCorrect) {
+        const correctAnswers = this.getValidAnswers(this.currentQuestion.signature.display);
+        const matchedAnswer = correctAnswers.find(signature => this.matchesSelectedAnswer(signature));
+        if (matchedAnswer) {
             this.streak++;
             this.streakCountEl.textContent = this.streak.toString();
             // Check if player won (10 correct in a row)
             if (this.streak >= 10) {
                 this.feedbackEl.textContent = '🏆 Bravo tu as gagné ! 🏆';
                 this.feedbackEl.className = 'feedback correct victory';
-                // Highlight correct buttons
-                this.beatsButtons.forEach(btn => {
-                    if (parseInt(btn.getAttribute('data-beats')) === correct.beatsPerMeasure) {
-                        btn.classList.add('correct');
-                    }
-                });
-                this.unitButtons.forEach(btn => {
-                    if (btn.getAttribute('data-unit') === correct.beatUnit) {
-                        btn.classList.add('correct');
-                    }
-                });
-                this.typeButtons.forEach(btn => {
-                    if (btn.getAttribute('data-type') === correct.type) {
-                        btn.classList.add('correct');
-                    }
-                });
+                this.highlightCorrectAnswers([matchedAnswer]);
                 this.submitBtn.style.display = 'none';
                 this.nextBtn.style.display = 'block';
                 // Reset streak
@@ -218,22 +278,7 @@ export class TimeSignatureGame {
             else {
                 this.feedbackEl.textContent = '✓ Correct !';
                 this.feedbackEl.className = 'feedback correct';
-                // Highlight correct buttons
-                this.beatsButtons.forEach(btn => {
-                    if (parseInt(btn.getAttribute('data-beats')) === correct.beatsPerMeasure) {
-                        btn.classList.add('correct');
-                    }
-                });
-                this.unitButtons.forEach(btn => {
-                    if (btn.getAttribute('data-unit') === correct.beatUnit) {
-                        btn.classList.add('correct');
-                    }
-                });
-                this.typeButtons.forEach(btn => {
-                    if (btn.getAttribute('data-type') === correct.type) {
-                        btn.classList.add('correct');
-                    }
-                });
+                this.highlightCorrectAnswers([matchedAnswer]);
                 this.submitBtn.style.display = 'none';
                 this.nextBtn.style.display = 'block';
             }
@@ -242,36 +287,9 @@ export class TimeSignatureGame {
             // Reset streak on error
             this.streak = 0;
             this.streakCountEl.textContent = this.streak.toString();
-            this.feedbackEl.textContent = `✗ Incorrect. C'était ${correct.beatsPerMeasure} temps par mesure (${correct.type}), unité de temps : ${correct.beatUnit}`;
+            this.feedbackEl.textContent = `✗ Incorrect. C'était ${this.formatAnswers(correctAnswers)}`;
             this.feedbackEl.className = 'feedback incorrect';
-            // Highlight buttons - show correct answers in green, incorrect selections in red (only if they don't match correct)
-            this.beatsButtons.forEach(btn => {
-                const beats = parseInt(btn.getAttribute('data-beats'));
-                if (beats === correct.beatsPerMeasure) {
-                    btn.classList.add('correct');
-                }
-                else if (beats === this.selectedBeats) {
-                    btn.classList.add('incorrect');
-                }
-            });
-            this.unitButtons.forEach(btn => {
-                const unit = btn.getAttribute('data-unit');
-                if (unit === correct.beatUnit) {
-                    btn.classList.add('correct');
-                }
-                else if (unit === this.selectedUnit) {
-                    btn.classList.add('incorrect');
-                }
-            });
-            this.typeButtons.forEach(btn => {
-                const type = btn.getAttribute('data-type');
-                if (type === correct.type) {
-                    btn.classList.add('correct');
-                }
-                else if (type === this.selectedType) {
-                    btn.classList.add('incorrect');
-                }
-            });
+            this.highlightIncorrectAnswer(correctAnswers);
             this.submitBtn.style.display = 'none';
             this.nextBtn.style.display = 'block';
         }
